@@ -1,0 +1,40 @@
+{
+  "defaultGridSize": 16,
+  "levels": [
+    {
+      "identifier": "Door_Missing_Target",
+      "pxWid": 32,
+      "pxHei": 32,
+      "layerInstances": [
+        { "__identifier": "Collision", "__type": "IntGrid", "__gridSize": 16, "intGridCsv": [1, 1, 1, 1] },
+        {
+          "__identifier": "Entities",
+          "__type": "Entities",
+          "__gridSize": 16,
+          "entityInstances": [
+            {
+              "__identifier": "PlayerSpawn",
+              "iid": "player",
+              "px": [0, 0],
+              "width": 16,
+              "height": 16,
+              "fieldInstances": [{ "__identifier": "facing", "__type": "Enum", "__value": "down" }]
+            },
+            {
+              "__identifier": "Door",
+              "iid": "bad-door",
+              "px": [16, 0],
+              "width": 16,
+              "height": 16,
+              "fieldInstances": [
+                { "__identifier": "id", "__type": "String", "__value": "bad-door" },
+                { "__identifier": "targetDoor", "__type": "String", "__value": "entry" },
+                { "__identifier": "locked", "__type": "Bool", "__value": false }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

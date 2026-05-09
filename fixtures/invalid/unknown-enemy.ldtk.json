@@ -1,0 +1,42 @@
+{
+  "defaultGridSize": 16,
+  "levels": [
+    {
+      "identifier": "Unknown_Enemy",
+      "pxWid": 32,
+      "pxHei": 32,
+      "layerInstances": [
+        { "__identifier": "Collision", "__type": "IntGrid", "__gridSize": 16, "intGridCsv": [1, 1, 1, 1] },
+        {
+          "__identifier": "Entities",
+          "__type": "Entities",
+          "__gridSize": 16,
+          "entityInstances": [
+            {
+              "__identifier": "PlayerSpawn",
+              "iid": "player",
+              "px": [0, 0],
+              "width": 16,
+              "height": 16,
+              "fieldInstances": [{ "__identifier": "facing", "__type": "Enum", "__value": "down" }]
+            },
+            {
+              "__identifier": "EnemySpawn",
+              "iid": "goblin-spawn",
+              "px": [16, 16],
+              "width": 16,
+              "height": 16,
+              "fieldInstances": [
+                { "__identifier": "id", "__type": "String", "__value": "goblin-spawn" },
+                { "__identifier": "enemyType", "__type": "Enum", "__value": "goblin" },
+                { "__identifier": "patrolRadius", "__type": "Float", "__value": 10 },
+                { "__identifier": "count", "__type": "Int", "__value": 1 },
+                { "__identifier": "respawn", "__type": "Bool", "__value": false }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
