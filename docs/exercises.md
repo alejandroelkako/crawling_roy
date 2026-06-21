@@ -70,7 +70,7 @@ The layers, and the one rule that holds them together:
 3. Press **`r`**. Watch the console log `Loaded content …`. You just triggered a hot reload.
 4. In a second terminal: `npm run validate:content` and `npm run build`. Both should pass.
 
-**Verify:** the browser shows a dungeon room with labeled markers; both commands exit 0.
+**Verify:** the browser shows a starter platformer level with labeled markers; both commands exit 0.
 
 <details><summary>What you just learned</summary>
 
@@ -83,7 +83,7 @@ The layers, and the one rule that holds them together:
 Pick the **Door** in the sample level. Without changing any code, write down — file by file — every transformation it goes through, from JSON to pixels on screen.
 
 **Steps**
-1. Find the Door's raw JSON in `public/assets/exported/levels/dungeon.ldtk.json` (it's `north-door`, around line 62).
+1. Find the Door's raw JSON in `public/assets/exported/levels/starter.ldtk.json` (it's `exit-door`, around line 62).
 2. Follow it: `loadLdtkWorld` → `parseLdtkLevel` → `parseEntities` → `parseEntity`'s `case "Door"` → which field readers fire? → `DoorDefinition` → `validateLevelDefinition` / `validateEntity`'s `case "Door"` → `createRuntimeEntity` → `createDoor` → `DebugDraw.entityMarker`.
 3. For each hop, note the **type** the data has at that point (`LdtkEntityInstance` → `DoorDefinition` → `GameEntity`).
 
@@ -121,7 +121,7 @@ For each of the five fixtures in `fixtures/invalid/`, predict **(a)** which gate
 - **unknown-enemy → parser** (`readEnum` throws "invalid enemyType value goblin").
 - **bad-trigger-payload → parser** (`parsePayload` → `JSON.parse` throws "invalid JSON in field payload").
 - **missing-player-spawn → validator** (`ContentValidationError`: "must contain exactly one PlayerSpawn; found 0").
-- **missing-animation-tag → validator** (`ContentValidationError`: "missing animation tag walk_down").
+- **missing-animation-tag -> validator** (`ContentValidationError`: "missing animation tag run_right").
 
 The punchline: 3 caught by the parser, 2 by the validator. Notice that `validateEntity`'s checks for `targetLevel` and `enemyType` are effectively **unreachable from the LDtk path** — the parser already threw. They're a safety net for code that constructs an `EntityDefinition` directly. Spotting "redundant" validation and understanding *why* it's there is the real lesson.
 </details>
@@ -129,15 +129,15 @@ The punchline: 3 caught by the parser, 2 by the validator. Notice that `validate
 ### Exercise 1.2 — Hand-decode the collision grid 🟢
 **Goal:** understand the IntGrid → `Rect[]` conversion in `parseCollision` (`parseLdtkLevel.ts:68`).
 
-The sample's `Collision` layer is a flat `intGridCsv` array (`dungeon.ldtk.json:108`). Using only the code in `parseCollision` and the level's `pxWid` of 320:
+The sample's `Collision` layer is a flat `intGridCsv` array (`starter.ldtk.json:108`). Using only the code in `parseCollision` and the level's `pxWid` of 320:
 
 1. Compute `widthInCells`.
 2. Count how many `solids` the parser produces. (No `2`/`3` values appear, so how many `hazards`?)
-3. Row 0 has two `0`s among the `1`s. Compute their pixel `x`. What real feature of the level sits exactly there?
+3. Row 0 has two `0`s among the `1`s. Compute their pixel `x`. Which sample-level opening does that represent?
 
 <details><summary>Answers</summary>
 
-`widthInCells = Math.ceil(320 / 16) = 20`, grid is 12 rows. **58 solids, 0 hazards.** The two `0`s in row 0 are at indices 9 and 10 → `x = 144` and `160` — the **doorway gap**, lined up precisely with the `north-door` entity at `px:[144,0]` width 32. Map geometry and entity placement agree by construction. Change a `1` to a `2` in the CSV, re-run `npm run dev`, and watch a blue hazard rectangle appear.
+`widthInCells = Math.ceil(320 / 16) = 20`, grid is 12 rows. **58 solids, 0 hazards.** The two `0`s in row 0 are at indices 9 and 10 -> `x = 144` and `160` — the **exit opening**, lined up precisely with the `exit-door` entity at `px:[144,0]` width 32. Map geometry and entity placement agree by construction. Change a `1` to a `2` in the CSV, re-run `npm run dev`, and watch a blue hazard rectangle appear.
 </details>
 
 ---
@@ -152,7 +152,7 @@ The sample's `Collision` layer is a flat `intGridCsv` array (`dungeon.ldtk.json:
 `TriggerZone.eventName` is gated by `knownEvents` (`validateContent.ts:12`) — and *only* there (the parser reads it as a plain string). 
 
 1. Add `"spawn_boss"` to `knownEvents`.
-2. In `dungeon.ldtk.json`, change the existing TriggerZone's `eventName` value to `spawn_boss` (or add a second TriggerZone on the `Triggers` layer that uses it).
+2. In `starter.ldtk.json`, change the existing TriggerZone's `eventName` value to `spawn_boss` (or add a second TriggerZone on the `Triggers` layer that uses it).
 3. `npm run validate:content`.
 
 <details><summary>Hint</summary>
@@ -181,13 +181,13 @@ With the type and validator updated but the parser's `readEnum` list stale, `rea
 
 `validateSpriteAtlasDefinition` (`validateContent.ts:105`) requires the tags in `requiredAnimationTags` (`:13`) and checks every tag's frame range.
 
-1. Add `"idle_up"` to `requiredAnimationTags`. Run `validate:content` — `hero.json` and `enemies.json` now fail.
-2. Add an `idle_up` frame tag to both `public/assets/exported/sprites/*.json` so they pass again (you'll need at least one more frame, or point `idle_up` at an existing frame index).
+1. Add `"jump"` to `requiredAnimationTags`. Run `validate:content` — `hero.json` and `enemies.json` now fail.
+2. Add a `jump` frame tag to both `public/assets/exported/sprites/*.json` so they pass again (you can point `jump` at an existing frame index until dedicated jump art exists).
 3. Bonus: give a tag a `to` index past the end of `frames` and confirm the "points outside the frame range" check fires.
 
 <details><summary>Hint</summary>
 
-A frame tag is `{ "name": "idle_up", "from": 0, "to": 0, "direction": "forward" }`. The range check is `tag.to >= atlas.frames.length` → keep `from`/`to` within the frame count. Look at `parseSpriteAtlas` (`loadSpriteAtlas.ts:24`) to see how `frameTags` become the `tags` record.
+A frame tag is `{ "name": "jump", "from": 0, "to": 0, "direction": "forward" }`. The range check is `tag.to >= atlas.frames.length` -> keep `from`/`to` within the frame count. Look at `parseSpriteAtlas` (`loadSpriteAtlas.ts:24`) to see how `frameTags` become the `tags` record.
 </details>
 
 ---
@@ -197,7 +197,7 @@ A frame tag is `{ "name": "idle_up", "from": 0, "to": 0, "direction": "forward" 
 ### Exercise 3.1 — Add a brand-new entity type, end to end
 **Goal:** the one exercise that proves you understand the architecture. You'll touch every layer, in order, and let the **TypeScript compiler tell you what you forgot**.
 
-Add a `Sign` entity: a readable in-world sign with a `text` field and an optional `facing`.
+Add a `Sign` entity: a readable in-world sign with a `text` field and an optional `spawnDirection` or display side.
 
 Follow the contract from `docs/entity-contract.md` ("How to Add a New Entity Type"), in dependency order:
 
@@ -208,7 +208,7 @@ Follow the contract from `docs/entity-contract.md` ("How to Add a New Entity Typ
 5. **Register** — in `ldtkEntityRegistry.ts`: add `Sign: createSign`.
 6. **Draw** — in `DebugDraw.ts`: add a color for `Sign` in the `colors` map (`:43`).
 7. **Document** — add a `## Sign` section to `docs/entity-contract.md`.
-8. **Sample** — add a `Sign` instance to the `Entities` layer in `dungeon.ldtk.json` (and to `defs.entities`).
+8. **Sample** — add a `Sign` instance to the `Entities` layer in `starter.ldtk.json` (and to `defs.entities`).
 9. `npm run check`, then `npm run dev` and find your sign's marker.
 
 **The payoff — do this deliberately:** make edits 1–4 and 7–8, then run `npm run build` *before* doing 5 and 6. Read the two compiler errors. They will point you straight at `ldtkEntityRegistry.ts` and `DebugDraw.ts`.
@@ -253,7 +253,7 @@ Then write a 15-line scratch script and run it with `npx tsx scratch.ts` to conf
 Look at `Game.reload()` (`Game.ts:35`). Line 44 is `level.entities.map(createRuntimeEntity);`.
 
 1. The result of that `.map` is never assigned. So what is the line actually *for*? (Hint: what happens inside `createRuntimeEntity` → `ldtkEntityRegistry[kind]`, and what would happen if a kind were unregistered?)
-2. The renderer draws markers from `level.entities` (the *definitions*), not from the `GameEntity[]` the registry produces. Make the runtime entities real: store them on the `Game`, and have `DebugDraw` render each `GameEntity`'s `label` (e.g. `"Door -> Dungeon_02:south-door"`) instead of recomputing a label from the definition.
+2. The renderer draws markers from `level.entities` (the *definitions*), not from the `GameEntity[]` the registry produces. Make the runtime entities real: store them on the `Game`, and have `DebugDraw` render each `GameEntity`'s `label` (e.g. `"Door -> Level_02:entry-door"`) instead of recomputing a label from the definition.
 
 <details><summary>Hint</summary>
 
@@ -273,14 +273,14 @@ Wire the animation pipeline you debugged in 4.1 into the renderer.
 - Build an `AnimationAtlas` from the loaded `hero.json`, drive an `AnimationPlayer` with a `requestAnimationFrame` loop and real delta time.
 - In `CanvasRenderer`, `drawImage` the current frame's sub-rectangle at the `PlayerSpawn`'s position, on top of the debug rects.
 
-**Done when:** the hero's two-frame `walk_down` animation plays at the spawn point in `npm run dev`. (Today the renderer never calls `drawImage` at all — you're adding the first real sprite blit.)
+**Done when:** the hero's two-frame `run_right` animation plays at the spawn point in `npm run dev`. (Today the renderer never calls `drawImage` at all — you're adding the first real sprite blit.)
 
 ### Capstone B — Door transitions between two levels
-- Author a second level `Dungeon_02` (copy the sample, give it a `south-door` Door pointing back to `Dungeon_01:north-door`). Add it to the world JSON or a second file.
+- Author a second level `Level_02` (copy the sample, give it an `entry-door` Door pointing back to `Level_01:exit-door`). Add it to the world JSON or a second file.
 - Generalize `Game` to load a level by id at runtime and to switch levels — when a key is pressed near a Door, load `targetLevel` and position the player at the matching `targetDoor`.
 - Respect `locked` / `requiresKey`: block the transition unless the matching key id has been "collected" (a `Set<string>` on `Game` is enough).
 
-**Done when:** you can walk through the north door, arrive in `Dungeon_02`, and the locked door is gated on the silver key. This exercises `loadLdtkWorld`'s `levelId` parameter, the Door contract, and game state — the natural next step beyond a static demo.
+**Done when:** you can walk through the exit door, arrive in `Level_02`, and the locked door is gated on the silver key. This exercises `loadLdtkWorld`'s `levelId` parameter, the Door contract, and game state — the natural next step beyond a static demo.
 
 ---
 

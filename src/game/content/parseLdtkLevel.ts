@@ -1,11 +1,11 @@
 import type {
   CollisionDefinition,
-  Direction,
   EnemyType,
   EntityDefinition,
   LevelDefinition,
   PickupType,
   Rect,
+  SpawnDirection,
   TileLayerDefinition
 } from "./contentTypes";
 import { readBoolean, readNullableString, readNumber, readString } from "../ldtk/ldtkFieldReaders";
@@ -123,7 +123,7 @@ function parseEntity(entity: LdtkEntityInstance): EntityDefinition {
       return {
         ...base,
         kind: "PlayerSpawn",
-        facing: readEnum<Direction>(entity, "facing", ["up", "down", "left", "right"], "down")
+        spawnDirection: readEnum<SpawnDirection>(entity, "spawnDirection", ["left", "right"], "right")
       };
     case "Door":
       return {

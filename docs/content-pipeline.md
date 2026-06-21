@@ -34,7 +34,7 @@ Fix the first reported error in LDtk or Aseprite, export again, then rerun valid
 ## Adding a Sprite Sheet
 
 1. Save the `.aseprite` source in `assets/source/sprites`.
-2. Add required animation tags such as `idle_down` and `walk_down`.
+2. Add required animation tags such as `idle_right` and `run_right`.
 3. Export PNG and JSON to `public/assets/exported/sprites`.
 4. Add the JSON path to the loader if code needs it.
 5. Run `npm run validate:content`.

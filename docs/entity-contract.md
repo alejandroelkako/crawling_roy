@@ -5,9 +5,9 @@ This is the contract between LDtk and TypeScript. Designers may place only these
 ## PlayerSpawn
 
 - Purpose: player start point.
-- Required fields: `facing`.
+- Required fields: `spawnDirection`.
 - Optional fields: `id`, default `player-start`.
-- Valid values: `facing` is `up`, `down`, `left`, or `right`.
+- Valid values: `spawnDirection` is `left` or `right`.
 - Runtime behavior: marks where the player should start.
 - Validation: every playable level must contain exactly one.
 
