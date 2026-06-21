@@ -11,8 +11,8 @@ async function readJson<T>(path: string): Promise<T> {
 }
 
 async function validateValidContent(): Promise<void> {
-  const world = await readJson<LdtkWorld>("public/assets/exported/levels/dungeon.ldtk.json");
-  const level = parseLdtkLevel(world, "Dungeon_01");
+  const world = await readJson<LdtkWorld>("public/assets/exported/levels/starter.ldtk.json");
+  const level = parseLdtkLevel(world, "Level_01");
   console.log(`OK level: ${level.id} (${level.entities.length} entities)`);
 
   for (const atlasPath of ["public/assets/exported/sprites/hero.json", "public/assets/exported/sprites/enemies.json"]) {

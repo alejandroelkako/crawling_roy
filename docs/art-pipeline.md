@@ -6,12 +6,13 @@ Save editable sprite sources in `assets/source/sprites`. Exported PNG and JSON g
 
 Use Aseprite tags for animation names. Standard tags:
 
-- `idle_down`, `idle_up`, `idle_left`, `idle_right`
-- `walk_down`, `walk_up`, `walk_left`, `walk_right`
-- `attack_down`, `attack_up`, `attack_left`, `attack_right`
+- `idle_right`, `idle_left`
+- `run_right`, `run_left`
+- `jump`, `fall`, `land`
+- `attack_right`, `attack_left`
 - `hurt`, `death`
 
-The current validator requires `idle_down` and `walk_down` for sample atlases.
+The current validator requires `idle_right` and `run_right` for sample atlases.
 
 ## Sprite Rules
 

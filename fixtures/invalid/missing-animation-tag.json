@@ -5,7 +5,7 @@
   "meta": {
     "image": "hero.png",
     "frameTags": [
-      { "name": "idle_down", "from": 0, "to": 0, "direction": "forward" }
+      { "name": "idle_right", "from": 0, "to": 0, "direction": "forward" }
     ]
   }
 }

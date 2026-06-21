@@ -26,7 +26,7 @@ Fix: use valid JSON such as `{"text":"Hello"}` or leave the field empty.
 
 ## Sprite Animation Tag Not Found
 
-The code requested an animation such as `walk_down`, but the exported Aseprite JSON does not contain that tag.
+The code requested an animation such as `run_right`, but the exported Aseprite JSON does not contain that tag.
 
 Fix: open the `.aseprite` file, add or rename the tag, export again, and rerun validation.
 

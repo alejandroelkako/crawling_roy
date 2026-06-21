@@ -18,7 +18,7 @@
               "px": [0, 0],
               "width": 16,
               "height": 16,
-              "fieldInstances": [{ "__identifier": "facing", "__type": "Enum", "__value": "down" }]
+              "fieldInstances": [{ "__identifier": "spawnDirection", "__type": "Enum", "__value": "right" }]
             },
             {
               "__identifier": "EnemySpawn",

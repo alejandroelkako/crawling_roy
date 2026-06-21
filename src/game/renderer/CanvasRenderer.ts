@@ -1,5 +1,6 @@
 import type { LevelDefinition } from "../content/contentTypes";
 import { DebugDraw } from "../debug/DebugDraw";
+import { PlayerState } from "../entities/Player";
 
 export class CanvasRenderer {
   private readonly canvas: HTMLCanvasElement;
@@ -15,7 +16,7 @@ export class CanvasRenderer {
     this.resize();
   }
 
-  render(level: LevelDefinition): void {
+  render(level: LevelDefinition, player?: PlayerState): void {
     this.resize();
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.ctx.save();
@@ -29,9 +30,20 @@ export class CanvasRenderer {
     for (const rect of level.collision.solids) debug.rect(rect, "#ff6978", true);
     for (const rect of level.collision.hazards) debug.rect(rect, "#7dd3fc", true);
     for (const entity of level.entities) debug.entityMarker(entity);
+    if (player) this.drawPlayer(player);
     this.ctx.restore();
 
     new DebugDraw(this.ctx).levelSummary(level);
+  }
+
+  private drawPlayer(player: PlayerState): void {
+      this.ctx.save();
+      this.ctx.fillStyle = "#f8e16c";
+      this.ctx.fillRect(player.x, player.y, player.width, player.height);
+      this.ctx.strokeStyle = "#1c1f24";
+      this.ctx.lineWidth = 1;
+      this.ctx.strokeRect(player.x + 0.5, player.y + 0.5, player.width - 1, player.height - 1);
+      this.ctx.restore();
   }
 
   private resize(): void {

@@ -1,4 +1,4 @@
-export type Direction = "up" | "down" | "left" | "right";
+export type SpawnDirection = "left" | "right";
 export type EnemyType = "slime" | "bat" | "skeleton";
 export type PickupType = "coin" | "heart" | "key";
 
@@ -49,7 +49,7 @@ export interface BaseEntityDefinition {
 
 export interface PlayerSpawnDefinition extends BaseEntityDefinition {
   kind: "PlayerSpawn";
-  facing: Direction;
+  spawnDirection: SpawnDirection;
 }
 
 export interface DoorDefinition extends BaseEntityDefinition {
