@@ -1,4 +1,4 @@
-# Learning Platforming Roy — A Hands-On Curriculum
+# Learning Crawling Roy — A Hands-On Curriculum
 
 A progressive set of exercises that teach this codebase by working *through* it, not just reading it. Each exercise targets one real architectural idea, points at the exact files involved, and ends with a command you can run to prove you got it right.
 

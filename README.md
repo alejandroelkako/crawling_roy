@@ -1,4 +1,4 @@
-# Platforming Roy
+# Crawling Roy
 
 Browser 2D platformer content pipeline scaffold using TypeScript, Vite, LDtk exports, and Aseprite sprite-sheet exports.
 
