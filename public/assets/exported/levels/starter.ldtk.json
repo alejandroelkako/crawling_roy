@@ -18,7 +18,7 @@
   },
   "levels": [
     {
-      "identifier": "Dungeon_01",
+      "identifier": "Level_01",
       "pxWid": 320,
       "pxHei": 192,
       "layerInstances": [
@@ -55,19 +55,19 @@
               "height": 16,
               "fieldInstances": [
                 { "__identifier": "id", "__type": "String", "__value": "player-start" },
-                { "__identifier": "facing", "__type": "Enum", "__value": "down" }
+                { "__identifier": "spawnDirection", "__type": "Enum", "__value": "right" }
               ]
             },
             {
               "__identifier": "Door",
-              "iid": "door-north-1",
+              "iid": "door-exit-1",
               "px": [144, 0],
               "width": 32,
               "height": 16,
               "fieldInstances": [
-                { "__identifier": "id", "__type": "String", "__value": "north-door" },
-                { "__identifier": "targetLevel", "__type": "String", "__value": "Dungeon_02" },
-                { "__identifier": "targetDoor", "__type": "String", "__value": "south-door" },
+                { "__identifier": "id", "__type": "String", "__value": "exit-door" },
+                { "__identifier": "targetLevel", "__type": "String", "__value": "Level_02" },
+                { "__identifier": "targetDoor", "__type": "String", "__value": "entry-door" },
                 { "__identifier": "locked", "__type": "Bool", "__value": true },
                 { "__identifier": "requiresKey", "__type": "String", "__value": "silver-key" }
               ]

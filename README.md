@@ -1,6 +1,6 @@
-# Crawling Roy
+# Platforming Roy
 
-Browser 2D dungeon crawler content pipeline scaffold using TypeScript, Vite, LDtk exports, and Aseprite sprite-sheet exports.
+Browser 2D platformer content pipeline scaffold using TypeScript, Vite, LDtk exports, and Aseprite sprite-sheet exports.
 
 ## Prerequisites
 
@@ -17,7 +17,7 @@ npm install
 npm run dev
 ```
 
-Open the Vite URL and the demo loads `Dungeon_01` from `public/assets/exported/levels/dungeon.ldtk.json`.
+Open the Vite URL and the demo loads `Level_01` from `public/assets/exported/levels/starter.ldtk.json`.
 
 ## Commands
 

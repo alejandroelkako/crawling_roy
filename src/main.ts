@@ -8,8 +8,8 @@ if (!app) {
 }
 
 const game = new Game(app, {
-  levelUrl: "/assets/exported/levels/dungeon.ldtk.json",
-  levelId: "Dungeon_01",
+  levelUrl: "/assets/exported/levels/starter.ldtk.json",
+  levelId: "Level_01",
   spriteAtlases: ["/assets/exported/sprites/hero.json", "/assets/exported/sprites/enemies.json"]
 });
 

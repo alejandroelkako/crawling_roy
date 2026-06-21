@@ -16,7 +16,7 @@ export interface PlayerState extends Rect {
 export function createPlayerSpawn(definition: PlayerSpawnDefinition): GameEntity {
   return {
     id: definition.id,
-    label: `Player ${definition.facing}`,
+    label: `Player ${definition.spawnDirection}`,
     x: definition.x,
     y: definition.y
   };
@@ -33,4 +33,3 @@ export function createPlayer(definition: PlayerSpawnDefinition): PlayerState {
         grounded: false
     };
 }
-

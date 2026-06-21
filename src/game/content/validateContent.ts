@@ -10,7 +10,7 @@ const knownEntities = new Set(["PlayerSpawn", "Door", "EnemySpawn", "Pickup", "T
 const knownEnemyTypes = new Set(["slime", "bat", "skeleton"]);
 const knownPickupTypes = new Set(["coin", "heart", "key"]);
 const knownEvents = new Set(["show_message", "start_encounter", "open_secret", "level_complete"]);
-const requiredAnimationTags = ["idle_down", "walk_down"];
+const requiredAnimationTags = ["idle_right", "run_right"];
 
 export function validateLevelDefinition(level: LevelDefinition): void {
   const issues: ContentValidationIssue[] = [];
