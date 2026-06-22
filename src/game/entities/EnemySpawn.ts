@@ -16,15 +16,18 @@ export interface SlimeState extends Rect {
 export function createSlimes(spawn: EnemySpawnDefinition): SlimeState[] {
     let slimes: SlimeState[] = [];
     for (let i = 0; i < spawn.count; i++) {
+        const offSetX: number = spawn.x + Math.random() * 32 - 1;
+        const offSetY: number = spawn.y + Math.random() * 32 - 1;
+        console.log(`slime ${spawn.id}-${i} got coordinates: ${offSetX},${offSetY}`);
         slimes.push({
-            x: spawn.x,
-            y: spawn.y,
+            x: offSetX,
+            y: offSetY,
             width: spawn.width,
             height: spawn.height,
             id: `${spawn.id}-${i}`,
             type: "slime",
-            homeX: spawn.x,
-            homeY: spawn.y,
+            homeX: offSetX,
+            homeY: offSetY,
             velocityX: 0,
             velocityY: 0,
             grounded: false,

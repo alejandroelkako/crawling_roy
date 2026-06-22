@@ -108,9 +108,9 @@ export class Game {
 
       slime.x += slime.velocityX * deltaSeconds;
       const hitWall = this.resolveHorizontalCollision(slime, level.collision.solids);
-      if (hitWall) slime.direction *= -1;
-
-      if (Math.abs(slime.x - slime.homeX) > slime.patrolRadius) {
+      if (hitWall) {
+        slime.direction *= -1;
+      } else if (Math.abs(slime.x - slime.homeX) > slime.patrolRadius) {
           slime.direction *= -1;
       }
 
