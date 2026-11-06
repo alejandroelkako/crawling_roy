@@ -4,10 +4,13 @@ import {
     ContentValidationError,
     type LevelDefinition,
     type PlayerSpawnDefinition,
+    type EnemySpawnDefinition,
     type Rect,
+    type PhysicsBody,
     type SpriteAtlasDefinition
 } from "./content/contentTypes";
 import { createPlayer, type PlayerState } from "./entities/Player";
+import { createSlimes, type SlimeState } from "./entities/EnemySpawn";
 import { createRuntimeEntity } from "./ldtk/ldtkEntityRegistry";
 import { CanvasRenderer } from "./renderer/CanvasRenderer";
 
@@ -22,6 +25,7 @@ export class Game {
   private level: LevelDefinition | null = null;
   private atlases: SpriteAtlasDefinition[] = [];
   private player: PlayerState | null = null;
+  private slimes: SlimeState[] = [];
   private overlay: HTMLDivElement | null = null;
   private animationFrameId: number | null = null;
   private lastFrameTime = 0;
@@ -55,6 +59,10 @@ export class Game {
       this.atlases = atlases;
       level.entities.map(createRuntimeEntity);
       this.player = createPlayer(findPlayerSpawn(level));
+      this.slimes = level.entities
+        .filter((entity): entity is EnemySpawnDefinition =>
+                entity.kind === "EnemySpawn" && entity.enemyType === "slime")
+        .flatMap(createSlimes);
       console.info("Loaded content", { level: level.id, atlases: this.atlases.map((atlas) => atlas.id) });
       this.startLoop();
     } catch (error) {
@@ -82,11 +90,35 @@ export class Game {
 
     if (this.level && this.player) {
         this.updatePlayer(this.player, this.level, deltaSeconds);
-        this.renderer.render(this.level, this.player);
+        for (const slime of this.slimes) {
+            this.updateSlime(slime, this.level, deltaSeconds);
+        }
+        this.renderer.render(this.level, this.player, this.slimes);
     }
 
     this.animationFrameId = window.requestAnimationFrame((nextTime) => this.frame(nextTime));
   }
+
+  private updateSlime(slime: SlimeState, level: LevelDefinition, deltaSeconds: number): void {
+      const slimeSpeed = 35;
+      const gravity = 500;
+
+      slime.velocityX = slime.direction * slimeSpeed;
+      slime.velocityY += gravity * deltaSeconds;
+
+      slime.x += slime.velocityX * deltaSeconds;
+      const hitWall = this.resolveHorizontalCollision(slime, level.collision.solids);
+      if (hitWall) {
+        slime.direction *= -1;
+      } else if (Math.abs(slime.x - slime.homeX) > slime.patrolRadius) {
+          slime.direction *= -1;
+      }
+
+      slime.y += slime.velocityY * deltaSeconds;
+      slime.grounded = false;
+      this.resolveVerticalCollision(slime, level.collision.solids);
+  }
+
 
   private updatePlayer(player: PlayerState, level: LevelDefinition, deltaSeconds: number): void {
       const moveSpeed = 90;
@@ -114,25 +146,27 @@ export class Game {
       player.y = clamp(player.y, 0, level.height - player.height);
   }
 
-  private resolveHorizontalCollision(player: PlayerState, solids: Rect[]): void {
-      const solid = solids.find((rect) => intersects(player, rect));
-      if (!solid) return;
+  private resolveHorizontalCollision(body: PhysicsBody, solids: Rect[]): boolean {
+      const solid = solids.find((rect) => intersects(body, rect));
+      if (!solid) return false;
 
-      if (player.velocityX > 0) player.x = solid.x - player.width;
-      if (player.velocityX < 0) player.x = solid.x + solid.width;
-      player.velocityX = 0;
+      if (body.velocityX > 0) body.x = solid.x - body.width;
+      if (body.velocityX < 0) body.x = solid.x + solid.width;
+      body.velocityX = 0;
+      return true;
   }
 
-  private resolveVerticalCollision(player: PlayerState, solids: Rect[]): void {
-      const solid = solids.find((rect) => intersects(player, rect));
-      if (!solid) return;
+  private resolveVerticalCollision(body: PhysicsBody, solids: Rect[]): boolean {
+      const solid = solids.find((rect) => intersects(body, rect));
+      if (!solid) return false;
 
-      if (player.velocityY > 0) {
-          player.y = solid.y - player.height;
-          player.grounded = true;
+      if (body.velocityY > 0) {
+          body.y = solid.y - body.height;
+          body.grounded = true;
       }
-      if (player.velocityY < 0) player.y = solid.y + solid.height;
-      player.velocityY = 0;
+      if (body.velocityY < 0) body.y = solid.y + solid.height;
+      body.velocityY = 0;
+      return true;
   }
 
   private handleKeyDown(event: KeyboardEvent): void {

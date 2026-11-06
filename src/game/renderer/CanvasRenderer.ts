@@ -1,6 +1,7 @@
 import type { LevelDefinition } from "../content/contentTypes";
 import { DebugDraw } from "../debug/DebugDraw";
 import { PlayerState } from "../entities/Player";
+import { SlimeState } from "../entities/EnemySpawn";
 
 export class CanvasRenderer {
   private readonly canvas: HTMLCanvasElement;
@@ -16,7 +17,7 @@ export class CanvasRenderer {
     this.resize();
   }
 
-  render(level: LevelDefinition, player?: PlayerState): void {
+  render(level: LevelDefinition, player?: PlayerState, slimes: SlimeState[] = []): void {
     this.resize();
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.ctx.save();
@@ -31,9 +32,20 @@ export class CanvasRenderer {
     for (const rect of level.collision.hazards) debug.rect(rect, "#7dd3fc", true);
     for (const entity of level.entities) debug.entityMarker(entity);
     if (player) this.drawPlayer(player);
+    for (const slime of slimes) this.drawSlime(slime);
     this.ctx.restore();
 
     new DebugDraw(this.ctx).levelSummary(level);
+  }
+
+  private drawSlime(slime: SlimeState): void {
+      this.ctx.save();
+      this.ctx.fillStyle = "#0f0";
+      this.ctx.fillRect(slime.x, slime.y, slime.width, slime.height);
+      this.ctx.strokeStyle = "#0f0";
+      this.ctx.lineWidth = 1;
+      this.ctx.strokeRect(slime.x + 0.5, slime.y + 0.5, slime.width - 1, slime.height - 1);
+      this.ctx.restore();
   }
 
   private drawPlayer(player: PlayerState): void {

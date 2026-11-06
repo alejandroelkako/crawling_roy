@@ -9,6 +9,12 @@ export interface Rect {
   height: number;
 }
 
+export interface PhysicsBody extends Rect {
+  velocityX: number;
+  velocityY: number;
+  grounded: boolean;
+}
+
 export interface TileInstance {
   x: number;
   y: number;
